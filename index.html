@@ -882,14 +882,14 @@
             </span>
             Facebook Page
           </a>
-          <a href="mailto:info@ultimateviewpoint.com" class="social-link">
+          <a href="mailto:ultimateviewpoint04@gmail.com" class="social-link">
             <span class="social-icon">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
             </span>
-            info@ultimateviewpoint.com
+            ultimateviewpoint04@gmail.com
           </a>
         </div>
       </div>
@@ -946,18 +946,71 @@
 
   // ── CONTACT FORM ─────────────────────────────────────────
   function handleSend() {
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
+    const name    = document.getElementById('name').value.trim();
+    const email   = document.getElementById('email').value.trim();
+    const subject = document.getElementById('subject').value.trim() || 'Website Enquiry';
     const message = document.getElementById('message').value.trim();
-    if (!name || !email || !message) { alert('Please fill in your name, email, and message.'); return; }
+    if (!name || !email || !message) {
+      alert('Please fill in your name, email, and message.');
+      return;
+    }
+    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=ultimateviewpoint04@gmail.com&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(gmailUrl, '_blank');
     document.getElementById('form-success').style.display = 'block';
     ['name','email','subject','message'].forEach(id => document.getElementById(id).value = '');
   }
 
-  // ── ADMIN PANEL TOGGLE ───────────────────────────────────
+  // ── ADMIN PANEL — PASSWORD PROTECTED ────────────────────
+  let adminUnlocked = false;
   function toggleAdmin() {
-    document.getElementById('adminPanel').classList.toggle('open');
+    const panel = document.getElementById('adminPanel');
+    if (panel.classList.contains('open')) {
+      panel.classList.remove('open');
+      adminUnlocked = false;
+      return;
+    }
+    if (adminUnlocked) {
+      panel.classList.add('open');
+      return;
+    }
+    // Show password prompt
+    const overlay = document.getElementById('adminOverlay');
+    overlay.style.display = 'flex';
+    setTimeout(() => document.getElementById('adminPwInput').focus(), 100);
   }
+
+  function checkAdminPassword() {
+    const input = document.getElementById('adminPwInput').value;
+    const err   = document.getElementById('adminPwError');
+    // Password stored as simple hash check
+    if (input === atob('bWJhZGl3ZS02NA==')) {
+      adminUnlocked = true;
+      document.getElementById('adminOverlay').style.display = 'none';
+      document.getElementById('adminPwInput').value = '';
+      document.getElementById('adminPanel').classList.add('open');
+    } else {
+      err.style.display = 'block';
+      document.getElementById('adminPwInput').value = '';
+      setTimeout(() => err.style.display = 'none', 2500);
+    }
+  }
+
+  function closeAdminOverlay() {
+    document.getElementById('adminOverlay').style.display = 'none';
+    document.getElementById('adminPwInput').value = '';
+  }
+
+  // Allow Enter key on password field
+  document.addEventListener('DOMContentLoaded', () => {
+    const pwInput = document.getElementById('adminPwInput');
+    if (pwInput) {
+      pwInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') checkAdminPassword();
+        if (e.key === 'Escape') closeAdminOverlay();
+      });
+    }
+  });
 
   // ── BOOK STORE (sessionStorage so books persist on reload) ─
   let books = [];
@@ -1179,5 +1232,27 @@
   // ── INIT ──────────────────────────────────────────────────
   renderBooks();
 </script>
+<!-- ── ADMIN PASSWORD OVERLAY ── -->
+<div id="adminOverlay" style="display:none;position:fixed;inset:0;background:rgba(13,27,42,.85);backdrop-filter:blur(6px);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:var(--deep);border:1px solid rgba(201,168,76,.3);border-radius:6px;padding:2.5rem;width:90%;max-width:380px;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:1rem;">🔒</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;color:var(--white);margin-bottom:.5rem;">Admin Access</div>
+    <p style="color:var(--gray);font-size:.85rem;margin-bottom:1.5rem;">Enter your password to manage the book library.</p>
+    <input id="adminPwInput" type="password" placeholder="Enter password"
+      style="width:100%;background:rgba(249,250,252,.06);border:1px solid rgba(249,250,252,.15);border-radius:4px;padding:.75rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;margin-bottom:.75rem;">
+    <p id="adminPwError" style="display:none;color:#e57373;font-size:.82rem;margin-bottom:.75rem;">Incorrect password. Please try again.</p>
+    <div style="display:flex;gap:.75rem;">
+      <button onclick="closeAdminOverlay()"
+        style="flex:1;padding:.7rem;background:transparent;border:1px solid rgba(249,250,252,.15);border-radius:4px;color:var(--gray);font-family:'DM Sans',sans-serif;cursor:pointer;font-size:.88rem;">
+        Cancel
+      </button>
+      <button onclick="checkAdminPassword()"
+        style="flex:1;padding:.7rem;background:var(--accent);border:none;border-radius:4px;color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;font-size:.88rem;">
+        Unlock
+      </button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
