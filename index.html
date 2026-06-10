@@ -21,16 +21,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink:       #0d1b2a;
-    --deep:      #132237;
-    --mid:       #1e3a5f;
-    --steel:     #2e5984;
-    --accent:    #c9a84c;
-    --accent-lt: #e8c97a;
-    --mist:      #e8edf3;
-    --white:     #f9fafc;
-    --gray:      #8a97a8;
-    --radius:    4px;
+    --ink:       #0a1628;
+    --deep:      #0f2040;
+    --mid:       #1a3a6e;
+    --steel:     #2563a8;
+    --accent:    #d4a843;
+    --accent-lt: #f0c96a;
+    --crimson:   #b83232;
+    --emerald:   #1a6b4a;
+    --royal:     #1e3a8a;
+    --mist:      #eaf0fb;
+    --white:     #f8faff;
+    --gray:      #7a8fa8;
+    --radius:    6px;
     --trans:     .35s cubic-bezier(.4,0,.2,1);
   }
 
@@ -113,19 +116,31 @@
   .hero-bg {
     position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse 80% 60% at 70% 40%, rgba(46,89,132,.45) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 80% at 10% 80%, rgba(201,168,76,.08) 0%, transparent 60%);
+      radial-gradient(ellipse 90% 70% at 80% 20%, rgba(37,99,168,.6) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at 10% 80%, rgba(180,50,50,.25) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 50% at 50% 100%, rgba(26,107,74,.3) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 90% 90%, rgba(212,168,67,.15) 0%, transparent 50%);
   }
   .hero-grid {
     position: absolute; inset: 0; pointer-events: none;
     background-image:
-      linear-gradient(rgba(201,168,76,.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(201,168,76,.04) 1px, transparent 1px);
-    background-size: 60px 60px;
+      linear-gradient(rgba(212,168,67,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,168,67,.05) 1px, transparent 1px);
+    background-size: 55px 55px;
   }
+  /* Decorative floating shapes */
+  .hero-shapes { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .hero-shape {
+    position: absolute; border-radius: 50%;
+    filter: blur(60px); opacity: .18;
+  }
+  .shape-1 { width:420px;height:420px;background:#2563a8;top:-80px;right:-60px; }
+  .shape-2 { width:280px;height:280px;background:#b83232;bottom:80px;left:-40px; }
+  .shape-3 { width:200px;height:200px;background:#d4a843;bottom:-40px;right:200px; }
+  .shape-4 { width:160px;height:160px;background:#1a6b4a;top:30%;left:40%; }
   .hero-content {
     position: relative; z-index: 2;
-    max-width: 700px;
+    max-width: 680px;
     animation: fadeUp .9s ease both;
   }
   .hero-eyebrow {
@@ -144,33 +159,50 @@
   }
   h1 em { font-style: italic; color: var(--accent-lt); }
   .hero-sub {
-    color: rgba(249,250,252,.65); font-size: 1.05rem;
+    color: rgba(248,250,255,.7); font-size: 1.05rem;
     line-height: 1.75; max-width: 520px; margin-bottom: 2.6rem;
   }
   .btn-primary {
     display: inline-block;
-    background: var(--accent);
-    color: var(--ink); font-weight: 500; font-size: .95rem;
-    padding: .85rem 2.2rem; border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--accent), var(--accent-lt));
+    color: var(--ink); font-weight: 600; font-size: .95rem;
+    padding: .9rem 2.4rem; border-radius: 30px;
     text-decoration: none; letter-spacing: .03em;
-    transition: background var(--trans), transform var(--trans), box-shadow var(--trans);
-    box-shadow: 0 4px 24px rgba(201,168,76,.35);
+    transition: transform var(--trans), box-shadow var(--trans);
+    box-shadow: 0 6px 28px rgba(212,168,67,.45);
   }
   .btn-primary:hover {
-    background: var(--accent-lt);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(201,168,76,.5);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 36px rgba(212,168,67,.6);
   }
   .btn-secondary {
     display: inline-block;
-    border: 1px solid rgba(249,250,252,.25);
-    color: rgba(249,250,252,.8); font-size: .95rem;
-    padding: .85rem 2.2rem; border-radius: var(--radius);
+    border: 1.5px solid rgba(248,250,255,.3);
+    color: rgba(248,250,255,.85); font-size: .95rem;
+    padding: .9rem 2.2rem; border-radius: 30px;
     text-decoration: none;
-    transition: border-color var(--trans), color var(--trans);
+    transition: border-color var(--trans), color var(--trans), background var(--trans);
     margin-left: 1rem;
   }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent-lt); }
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent-lt);
+    background: rgba(212,168,67,.08);
+  }
+  /* Hero topic pills */
+  .hero-topics {
+    display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 2.2rem;
+  }
+  .topic-pill {
+    font-size: .72rem; font-weight: 500; letter-spacing: .1em;
+    text-transform: uppercase; padding: .3rem .85rem;
+    border-radius: 20px; border: 1px solid;
+  }
+  .pill-blue   { border-color:rgba(37,99,168,.6);  color:#7fb3f5; background:rgba(37,99,168,.12); }
+  .pill-red    { border-color:rgba(184,50,50,.6);   color:#f5a0a0; background:rgba(184,50,50,.12); }
+  .pill-green  { border-color:rgba(26,107,74,.6);   color:#7fcea0; background:rgba(26,107,74,.12); }
+  .pill-gold   { border-color:rgba(212,168,67,.6);  color:var(--accent-lt); background:rgba(212,168,67,.12); }
+  .pill-purple { border-color:rgba(120,80,180,.6);  color:#c4a0f5; background:rgba(120,80,180,.12); }
   .hero-stats {
     position: absolute; bottom: 3rem; right: 0; left: 0;
     max-width: 1120px; margin: 0 auto; padding: 0 1.5rem;
@@ -182,7 +214,6 @@
     font-size: 2rem; font-weight: 400; color: var(--white);
   }
   .stat-label { font-size: .78rem; color: var(--gray); letter-spacing: .1em; text-transform: uppercase; }
-  /* Clickable stat */
   .stat-link {
     text-decoration: none; cursor: pointer;
     transition: border-color var(--trans), transform var(--trans);
@@ -195,50 +226,74 @@
   /* ── ABOUT ───────────────────────────────────────────── */
   #about {
     padding: 6rem 0;
-    background: var(--white);
+    background: linear-gradient(180deg, var(--white) 0%, var(--mist) 100%);
     position: relative;
   }
   .about-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+    display: grid; grid-template-columns: 420px 1fr; gap: 5rem; align-items: start;
   }
-  .about-visual {
-    position: relative; aspect-ratio: 4/5;
-    background: var(--deep);
-    border-radius: 2px;
-    overflow: hidden;
+  /* Photo */
+  .about-photo-wrap { display: flex; flex-direction: column; gap: 1.5rem; }
+  .about-photo-frame {
+    position: relative; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(10,22,40,.25), 0 0 0 3px var(--accent);
   }
-  .about-visual::before {
-    content: ''; position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse at 30% 40%, rgba(46,89,132,.7) 0%, transparent 60%),
-      linear-gradient(180deg, transparent 40%, rgba(13,27,42,.8) 100%);
+  .about-photo {
+    width: 100%; display: block;
+    aspect-ratio: 3/4; object-fit: cover; object-position: top center;
   }
-  .about-visual-inner {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  .about-photo-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(10,22,40,.7) 100%);
   }
-  .about-icon-wrap {
-    width: 100px; height: 100px; border: 1px solid rgba(201,168,76,.4);
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  .about-photo-badge {
+    position: absolute; bottom: 1.2rem; left: 1.2rem; right: 1.2rem;
+    background: rgba(10,22,40,.75); backdrop-filter: blur(8px);
+    border: 1px solid rgba(212,168,67,.3); border-radius: 8px;
+    padding: .7rem 1rem; display: flex; align-items: center; gap: .7rem;
+    color: var(--accent-lt); font-size: .85rem; font-weight: 500;
+    letter-spacing: .06em;
   }
-  .about-icon-wrap svg { width: 48px; height: 48px; }
-  .about-quote {
-    position: absolute; bottom: 2rem; left: 2rem; right: 2rem;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.3rem; font-style: italic; font-weight: 300;
-    color: rgba(249,250,252,.9); line-height: 1.5;
+  .badge-icon { font-size: 1.1rem; }
+  /* Credentials */
+  .about-credentials { display: flex; flex-direction: column; gap: .85rem; }
+  .credential {
+    display: flex; align-items: flex-start; gap: .75rem;
+    background: var(--white); border: 1px solid rgba(37,99,168,.15);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px; padding: .85rem 1rem;
+    box-shadow: 0 2px 8px rgba(10,22,40,.06);
   }
-  .about-accent-bar {
-    position: absolute; top: 2rem; right: -1rem;
-    width: 4px; height: 6rem;
-    background: linear-gradient(180deg, var(--accent), transparent);
+  .cred-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: .1rem; }
+  .cred-title { font-size: .85rem; font-weight: 600; color: var(--deep); margin-bottom: .2rem; }
+  .cred-sub { font-size: .75rem; color: var(--gray); line-height: 1.5; }
+  /* About text */
+  .about-title-tag {
+    font-size: .82rem; color: var(--steel); font-weight: 500;
+    letter-spacing: .06em; margin-bottom: .5rem;
+    text-transform: uppercase;
   }
-  .about-text .section-title { margin-bottom: 1.5rem; }
+  .about-text .section-title { margin-bottom: .4rem; }
   .about-body {
-    color: #4a5568; line-height: 1.85; font-size: .97rem; margin-bottom: 1.5rem;
+    color: #4a5568; line-height: 1.85; font-size: .97rem; margin-bottom: 1.2rem;
   }
+  /* Role tags */
+  .about-roles {
+    display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.2rem 0 1.8rem;
+  }
+  .role-tag {
+    font-size: .75rem; font-weight: 500; padding: .35rem .85rem;
+    border-radius: 20px; border: 1px solid;
+  }
+  .role-blue   { background:rgba(37,99,168,.08);  border-color:rgba(37,99,168,.3);  color:#1e5fa8; }
+  .role-green  { background:rgba(26,107,74,.08);  border-color:rgba(26,107,74,.3);  color:#1a6b4a; }
+  .role-gold   { background:rgba(212,168,67,.1);  border-color:rgba(212,168,67,.4); color:#a07820; }
+  .role-red    { background:rgba(184,50,50,.08);  border-color:rgba(184,50,50,.3);  color:#b83232; }
+  .role-purple { background:rgba(120,80,180,.08); border-color:rgba(120,80,180,.3); color:#7850b4; }
+  .role-navy   { background:rgba(30,58,138,.08);  border-color:rgba(30,58,138,.3);  color:#1e3a8a; }
+  /* Pillars */
   .pillars {
-    display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 2rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1.5rem;
   }
   .pillar {
     display: flex; align-items: center; gap: .6rem;
@@ -247,7 +302,10 @@
   .pillar-dot {
     width: 6px; height: 6px; border-radius: 50%;
     background: var(--accent); flex-shrink: 0;
+    transition: transform var(--trans);
   }
+  /* Old about visual styles no longer needed but keep divider */
+  .about-accent-bar { display: none; }
 
   /* ── BOOKS ───────────────────────────────────────────── */
   #books {
@@ -636,12 +694,14 @@
     .nav-links { display: none; }
     .hamburger { display: flex; }
     .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-    .about-visual { aspect-ratio: 16/7; }
+    .about-photo-wrap { max-width: 420px; margin: 0 auto; width: 100%; }
+    .about-photo { aspect-ratio: 3/4; }
     .books-grid { grid-template-columns: repeat(2, 1fr); }
     .books-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
     .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
     .hero-stats { position: static; margin-top: 3rem; padding: 0; flex-wrap: wrap; gap: 2rem; }
     #hero { padding-bottom: 3rem; }
+    .hero-topics { display: none; }
   }
   @media (max-width: 580px) {
     .books-grid { grid-template-columns: 1fr; max-width: 340px; margin: 0 auto; }
@@ -649,6 +709,8 @@
     .hero-stats { gap: 1.5rem; }
     .btn-secondary { margin-left: 0; margin-top: .75rem; }
     .hero-cta-group { display: flex; flex-direction: column; align-items: flex-start; gap: .5rem; }
+    .about-roles { gap: .4rem; }
+    .btn-dl { font-size: .72rem; padding: .55rem .5rem; }
   }
 </style>
 </head>
@@ -680,16 +742,29 @@
 <section id="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
+  <div class="hero-shapes">
+    <div class="hero-shape shape-1"></div>
+    <div class="hero-shape shape-2"></div>
+    <div class="hero-shape shape-3"></div>
+    <div class="hero-shape shape-4"></div>
+  </div>
   <div class="container">
     <div class="hero-content">
       <div class="hero-eyebrow">Ultimate Viewpoint</div>
-      <h1>Truth Demands<br><em>Honest Eyes</em></h1>
+      <h1>Where Truth Meets<br><em>Honest Evaluation</em></h1>
+      <div class="hero-topics">
+        <span class="topic-pill pill-blue">Religion</span>
+        <span class="topic-pill pill-red">Politics</span>
+        <span class="topic-pill pill-green">Economics</span>
+        <span class="topic-pill pill-gold">Culture</span>
+        <span class="topic-pill pill-purple">Human Behaviour</span>
+      </div>
       <p class="hero-sub">
-        Cutting through noise with rigorous, unflinching analysis of the human condition—religion, economics, politics, and culture examined without prejudice or agenda.
+        Independent analysis of the ideas, principles, and events that shape our world — written without prejudice, agenda, or compromise. Digital books for serious thinkers.
       </p>
       <div class="hero-cta-group">
         <a href="#books" class="btn-primary">Browse Books</a>
-        <a href="#about" class="btn-secondary">Our Mission</a>
+        <a href="#about" class="btn-secondary">About the Author</a>
       </div>
     </div>
     <div class="hero-stats">
@@ -713,31 +788,68 @@
 <section id="about">
   <div class="container">
     <div class="about-grid">
-      <div class="about-visual">
-        <div class="cover-pattern"></div>
-        <div class="about-visual-inner">
-          <div class="about-icon-wrap">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="24" cy="24" r="23" stroke="rgba(201,168,76,0.6)" stroke-width="1"/>
-              <path d="M24 8C24 8 14 18 14 26C14 31.52 18.48 36 24 36C29.52 36 34 31.52 34 26C34 18 24 8 24 8Z" stroke="rgba(201,168,76,0.8)" stroke-width="1.5" fill="none"/>
-              <circle cx="24" cy="26" r="4" stroke="rgba(201,168,76,1)" stroke-width="1.5"/>
-              <line x1="24" y1="15" x2="24" y2="20" stroke="rgba(201,168,76,0.5)" stroke-width="1"/>
-            </svg>
+
+      <!-- Photo column -->
+      <div class="about-photo-wrap">
+        <div class="about-photo-frame">
+          <img src="anthony-ikeme.jpeg" alt="Anthony Mbadiwe Ikeme — Author & Founder of Ultimate Viewpoint" class="about-photo">
+          <div class="about-photo-overlay"></div>
+          <div class="about-photo-badge">
+            <span class="badge-icon">✍</span>
+            <span>Author & Educator</span>
           </div>
         </div>
-        <div class="about-quote">"Where clarity meets conscience."</div>
-        <div class="about-accent-bar"></div>
+        <div class="about-credentials">
+          <div class="credential">
+            <span class="cred-icon">🎓</span>
+            <div>
+              <div class="cred-title">B.Sc. Agribusiness & Management</div>
+              <div class="cred-sub">2nd Class Upper — Michael Okpara University of Agriculture, Umudike</div>
+            </div>
+          </div>
+          <div class="credential">
+            <span class="cred-icon">🕊</span>
+            <div>
+              <div class="cred-title">Certificate in Peace & Conflict Resolution</div>
+              <div class="cred-sub">Michael Okpara University of Agriculture, Umudike</div>
+            </div>
+          </div>
+          <div class="credential">
+            <span class="cred-icon">🤖</span>
+            <div>
+              <div class="cred-title">AI & Engineering Prompt — 2025</div>
+              <div class="cred-sub">Certiport · Computer Professionals of Nigeria</div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <!-- Text column -->
       <div class="about-text">
-        <div class="section-label">Our Mission</div>
-        <h2 class="section-title">A Voice for<br>Unfiltered Truth</h2>
+        <div class="section-label">Meet the Author</div>
+        <h2 class="section-title">Anthony Mbadiwe<br><em style="font-style:italic;color:var(--accent)">Ikeme</em></h2>
+        <div class="about-title-tag">Analytical Author · Digital Creator · Agribusiness Entrepreneur</div>
         <div class="divider"></div>
+
         <p class="about-body">
-          Ultimate Viewpoint is a platform dedicated to the honest evaluation of the issues, ideas, and principles that shape our world. As a digital creator and educator, my mission is to provide deep insights into human, religious, economic, and political matters.
+          Ultimate Viewpoint is a platform dedicated to the honest evaluation of the issues, ideas, and principles that shape our world. As a digital creator, educator, and devout Christian, Anthony Mbadiwe Ikeme's mission is to provide deep, independent insights into human, religious, economic, and political matters — without compromise.
         </p>
         <p class="about-body">
-          Through my digital books and content, I aim to challenge perspectives and encourage critical thinking.
+          A graduate of Michael Okpara University of Agriculture, Umudike with a Second Class Upper degree in Agribusiness and Management, Anthony brings a rigorous academic foundation to his writing. His additional certification in Peace and Conflict Resolution reflects a deep commitment to understanding how societies fracture and heal.
         </p>
+        <p class="about-body">
+          A 2025 certified AI and Engineering Prompt professional through Certiport and the Computer Professionals of Nigeria, Anthony is at the frontier of how digital technology intersects with intellectual creation. Through his digital books and content, he challenges perspectives, encourages critical thinking, and equips readers with frameworks for navigating an increasingly complex world.
+        </p>
+
+        <div class="about-roles">
+          <div class="role-tag role-blue">📖 Author</div>
+          <div class="role-tag role-green">🌱 Agribusiness Entrepreneur</div>
+          <div class="role-tag role-gold">✝ Devout Christian</div>
+          <div class="role-tag role-red">🌍 Socio-Economic Analyst</div>
+          <div class="role-tag role-purple">🤖 AI Professional</div>
+          <div class="role-tag role-navy">🎓 Educator</div>
+        </div>
+
         <div class="pillars">
           <a class="pillar pillar-link" href="#books" onclick="filterBooks('Religion')"><span class="pillar-dot"></span>Religious Analysis</a>
           <a class="pillar pillar-link" href="#books" onclick="filterBooks('Economics')"><span class="pillar-dot"></span>Economic Realities</a>
@@ -747,6 +859,7 @@
           <a class="pillar pillar-link" href="#books" onclick="filterBooks('all')"><span class="pillar-dot"></span>Independent Thought</a>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -1109,8 +1222,8 @@
         ? `background:url('${book.cover}') center/cover no-repeat`
         : coverColors[book.colorIndex];
 
-      const pdfBtn  = hasPdf  ? `<a href="${book.pdf.url}"  class="btn-dl btn-pdf"  download="${book.pdf.name}">⬇ PDF</a>` : '';
-      const epubBtn = hasEpub ? `<a href="${book.epub.url}" class="btn-dl btn-epub" download="${book.epub.name}">⬇ EPUB</a>` : '';
+      const pdfBtn  = hasPdf  ? `<a href="${book.pdf.url}"  class="btn-dl btn-pdf"  ${isPaid ? '' : 'download="'+book.pdf.name+'"'} ${isPaid ? 'target="_blank"' : ''}>📄 ${isPaid ? 'Buy & Download PDF' : 'Free Download PDF'}</a>` : '';
+      const epubBtn = hasEpub ? `<a href="${book.epub.url}" class="btn-dl btn-epub" ${isPaid ? '' : 'download="'+book.epub.name+'"'} ${isPaid ? 'target="_blank"' : ''}>📘 ${isPaid ? 'Buy & Download EPUB' : 'Free Download EPUB'}</a>` : '';
       const priceTag = isPaid
         ? `<span class="book-price">${book.price}</span>`
         : `<span class="book-price free-tag">Free</span>`;
@@ -1225,7 +1338,7 @@
       if (e.isIntersecting) { e.target.style.animation = 'fadeUp .7s ease both'; observer.unobserve(e.target); }
     });
   }, { threshold: 0.1 });
-  document.querySelectorAll('.about-visual, .about-text').forEach(el => {
+  document.querySelectorAll('.about-photo-wrap, .about-text, .credential').forEach(el => {
     el.style.opacity = '0'; observer.observe(el);
   });
 
