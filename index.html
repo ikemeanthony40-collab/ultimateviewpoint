@@ -17,6 +17,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ultimate Viewpoint — Honest Evaluation. Uncommon Clarity.">
 <meta name="twitter:description" content="Honest evaluation of the ideas and principles that shape our world. Digital books for critical thinkers."
+<!-- Gumroad overlay checkout -->
+<script src="https://gumroad.com/js/gumroad.js"></script>
 <!-- Google reCAPTCHA v2 -->
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <!-- Content Security Policy -->
@@ -959,11 +961,17 @@
         </div>
         <div class="admin-row">
           <div class="admin-field">
-            <label class="admin-label">🔗 OR paste PDF URL (GitHub Raw / Google Drive)</label>
+            <label class="admin-label">🛒 Gumroad Product Link (for paid books)</label>
+            <input class="admin-input" id="a-gumroad" placeholder="https://ultimateviewpoint.gumroad.com/l/bookname" />
+          </div>
+        </div>
+        <div class="admin-row">
+          <div class="admin-field">
+            <label class="admin-label">🔗 Free PDF URL (GitHub Raw — free books only)</label>
             <input class="admin-input" id="a-pdf-url" placeholder="https://raw.githubusercontent.com/..." />
           </div>
           <div class="admin-field">
-            <label class="admin-label">🔗 OR paste EPUB URL</label>
+            <label class="admin-label">🔗 Free EPUB URL (GitHub Raw — free books only)</label>
             <input class="admin-input" id="a-epub-url" placeholder="https://raw.githubusercontent.com/..." />
           </div>
         </div>
@@ -1041,7 +1049,7 @@
           <!-- Google reCAPTCHA -->
           <div class="recaptcha-wrap">
             <div class="g-recaptcha"
-              data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+              data-sitekey="6LfHPh4tAAAAAIQLtp2fnrtTBuRgXvjEE9fWUh6u"
               data-theme="dark">
             </div>
             <p class="recaptcha-note">🔒 Spam protection enabled. Complete the check above before sending.</p>
@@ -1255,17 +1263,23 @@
     'linear-gradient(145deg,#152238,#243b55)',
   ];
 
-  // ── ADD BOOK ─────────────────────────────────────────────
   async function addBook() {
-    const title    = document.getElementById('a-title').value.trim();
-    const category = document.getElementById('a-category').value;
-    const price    = document.getElementById('a-price').value.trim() || 'Free';
-    const desc     = document.getElementById('a-desc').value.trim();
-    const pdfUrl   = document.getElementById('a-pdf-url').value.trim();
-    const epubUrl  = document.getElementById('a-epub-url').value.trim();
+    const title      = document.getElementById('a-title').value.trim();
+    const category   = document.getElementById('a-category').value;
+    const price      = document.getElementById('a-price').value.trim() || 'Free';
+    const desc       = document.getElementById('a-desc').value.trim();
+    const gumroadUrl = document.getElementById('a-gumroad').value.trim();
+    const pdfUrl     = document.getElementById('a-pdf-url').value.trim();
+    const epubUrl    = document.getElementById('a-epub-url').value.trim();
 
     if (!title || !category || !desc) {
       showMsg('Please fill in Title, Category, and Description.', '#e57373'); return;
+    }
+
+    // Warn if paid book has no Gumroad link
+    const isPaid = price !== 'Free' && price !== '0' && price !== '$0' && price !== '';
+    if (isPaid && !gumroadUrl) {
+      showMsg('⚠ Paid book needs a Gumroad link. Add it or set price to Free.', '#ffb74d'); return;
     }
 
     showMsg('Processing files…', 'var(--gray)');
@@ -1277,6 +1291,7 @@
     const book = {
       id: Date.now(),
       title, category, price, desc,
+      gumroad: gumroadUrl || null,
       pdf:  pdf  || (pdfUrl  ? { name: 'Download PDF',  url: pdfUrl  } : null),
       epub: epub || (epubUrl ? { name: 'Download EPUB', url: epubUrl } : null),
       cover: cover ? cover.url : null,
@@ -1300,7 +1315,7 @@
 
   // ── RENDER ALL BOOKS ─────────────────────────────────────
   function renderBooks() {
-    const grid = document.getElementById('booksGrid');
+    const grid  = document.getElementById('booksGrid');
     const empty = document.getElementById('emptyState');
 
     if (books.length === 0) {
@@ -1313,19 +1328,31 @@
     grid.innerHTML = '';
 
     books.forEach(book => {
-      const hasPdf  = book.pdf  && book.pdf.url;
-      const hasEpub = book.epub && book.epub.url;
-      const isPaid  = book.price && book.price !== 'Free' && book.price !== '0' && book.price !== '$0';
+      const hasPdf     = book.pdf  && book.pdf.url;
+      const hasEpub    = book.epub && book.epub.url;
+      const hasGumroad = book.gumroad && book.gumroad.length > 0;
+      const isPaid     = book.price && book.price !== 'Free' && book.price !== '0' && book.price !== '$0';
 
       const coverStyle = book.cover
         ? `background:url('${book.cover}') center/cover no-repeat`
         : coverColors[book.colorIndex];
 
-      const pdfBtn  = hasPdf  ? `<a href="${book.pdf.url}"  class="btn-dl btn-pdf"  ${isPaid ? '' : 'download="'+book.pdf.name+'"'} ${isPaid ? 'target="_blank"' : ''}>📄 ${isPaid ? 'Buy & Download PDF' : 'Free Download PDF'}</a>` : '';
-      const epubBtn = hasEpub ? `<a href="${book.epub.url}" class="btn-dl btn-epub" ${isPaid ? '' : 'download="'+book.epub.name+'"'} ${isPaid ? 'target="_blank"' : ''}>📘 ${isPaid ? 'Buy & Download EPUB' : 'Free Download EPUB'}</a>` : '';
+      // Paid book — Gumroad overlay button (opens checkout popup on page)
+      const gumroadBtn = hasGumroad
+        ? `<a href="${book.gumroad}" class="btn-dl btn-pdf gumroad-button" data-gumroad-overlay-checkout="true" target="_blank">🛒 Buy & Download</a>`
+        : '';
+
+      // Free book — direct download buttons
+      const pdfBtn  = (!isPaid && hasPdf)  ? `<a href="${book.pdf.url}"  class="btn-dl btn-pdf"  download="${book.pdf.name}">📄 Free Download PDF</a>`  : '';
+      const epubBtn = (!isPaid && hasEpub) ? `<a href="${book.epub.url}" class="btn-dl btn-epub" download="${book.epub.name}">📘 Free Download EPUB</a>` : '';
+
       const priceTag = isPaid
         ? `<span class="book-price">${book.price}</span>`
         : `<span class="book-price free-tag">Free</span>`;
+
+      // Format tags
+      const fmtPdf  = (hasPdf  || hasGumroad) ? '<span class="format-tag">PDF</span>'  : '';
+      const fmtEpub = (hasEpub || hasGumroad) ? '<span class="format-tag">EPUB</span>' : '';
 
       grid.innerHTML += `
         <div class="book-card" id="book-${book.id}">
@@ -1349,15 +1376,13 @@
             <div class="book-footer">
               <div class="book-price-row">
                 ${priceTag}
-                <div class="book-format-tags">
-                  ${hasPdf  ? '<span class="format-tag">PDF</span>'  : ''}
-                  ${hasEpub ? '<span class="format-tag">EPUB</span>' : ''}
-                </div>
+                <div class="book-format-tags">${fmtPdf}${fmtEpub}</div>
               </div>
               <div class="book-actions">
-                ${pdfBtn}
-                ${epubBtn}
-                ${!hasPdf && !hasEpub ? '<span style="font-size:.8rem;color:var(--gray)">No files attached yet</span>' : ''}
+                ${isPaid  ? gumroadBtn : ''}
+                ${!isPaid ? pdfBtn     : ''}
+                ${!isPaid ? epubBtn    : ''}
+                ${!hasGumroad && !hasPdf && !hasEpub ? '<span style="font-size:.8rem;color:var(--gray)">No files attached yet</span>' : ''}
               </div>
             </div>
           </div>
@@ -1399,7 +1424,7 @@
 
   // ── HELPERS ──────────────────────────────────────────────
   function clearAdminForm() {
-    ['a-title','a-desc','a-price','a-pdf-url','a-epub-url'].forEach(id => {
+    ['a-title','a-desc','a-price','a-gumroad','a-pdf-url','a-epub-url'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
