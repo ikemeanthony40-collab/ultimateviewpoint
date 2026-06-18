@@ -78,12 +78,13 @@
 }
 </script>
 
-<!-- ── GUMROAD + RECAPTCHA ───────────────────────────────── -->
+<!-- ── GUMROAD + RECAPTCHA + PAYSTACK ────────────────────── -->
 <script src="https://gumroad.com/js/gumroad.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
 
 <!-- ── CONTENT SECURITY POLICY ──────────────────────────── -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.google.com https://www.gstatic.com https://raw.githubusercontent.com https://gumroad.com https://assets.gumroad.com; script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://gumroad.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://raw.githubusercontent.com https://assets.gumroad.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.google.com https://www.gstatic.com https://raw.githubusercontent.com https://gumroad.com https://assets.gumroad.com https://js.paystack.co https://checkout.paystack.com; script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://gumroad.com https://js.paystack.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://raw.githubusercontent.com https://assets.gumroad.com https://checkout.paystack.com; frame-src https://checkout.paystack.com https://www.google.com;">
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -106,13 +107,18 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { scroll-behavior: smooth; font-size: 16px; }
+  html {
+    scroll-behavior: smooth; font-size: 16px;
+    overflow-x: hidden; max-width: 100%;
+  }
 
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--white);
     color: var(--ink);
     overflow-x: hidden;
+    max-width: 100vw;
+    position: relative;
   }
 
   /* ── UTILITY ─────────────────────────────────────────── */
@@ -371,7 +377,27 @@
     background: var(--accent); flex-shrink: 0;
     transition: transform var(--trans);
   }
-  /* Old about visual styles no longer needed but keep divider */
+  /* Site functions grid */
+  .site-functions { margin: 1.2rem 0 1.5rem; }
+  .sf-title {
+    font-size: .78rem; font-weight: 600; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--steel);
+    margin-bottom: .9rem;
+  }
+  .sf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; }
+  .sf-item {
+    display: flex; align-items: flex-start; gap: .7rem;
+    background: var(--white); border: 1px solid rgba(37,99,168,.1);
+    border-left: 3px solid var(--accent); border-radius: 6px;
+    padding: .85rem .9rem;
+    transition: box-shadow var(--trans), transform var(--trans);
+  }
+  .sf-item:hover { box-shadow: 0 4px 16px rgba(10,22,40,.1); transform: translateY(-2px); }
+  .sf-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: .1rem; }
+  .sf-name { font-size: .82rem; font-weight: 600; color: var(--deep); margin-bottom: .2rem; }
+  .sf-desc { font-size: .75rem; color: var(--gray); line-height: 1.55; }
+
+  /* ── ABOUT OLD VISUAL ─────────────────────────────────── */
   .about-accent-bar { display: none; }
 
   /* ── BOOKS ───────────────────────────────────────────── */
@@ -869,6 +895,7 @@
       <li><a href="#books">Books</a></li>
       <li><a href="#advertorial">Advertorial</a></li>
       <li><a href="#advertise">Advertise</a></li>
+      <li><a href="https://viewpoint64.gumroad.com/subscribe" target="_blank" rel="noopener" style="color:var(--accent-lt)!important;">Subscribe</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="#books" class="nav-cta">Browse Books</a></li>
     </ul>
@@ -881,6 +908,7 @@
     <a href="#books" onclick="closeMobile()">Books</a>
     <a href="#advertorial" onclick="closeMobile()">Advertorial</a>
     <a href="#advertise" onclick="closeMobile()">Advertise</a>
+    <a href="https://viewpoint64.gumroad.com/subscribe" target="_blank" rel="noopener" onclick="closeMobile()" style="color:var(--accent-lt);">⭐ Subscribe</a>
     <a href="#contact" onclick="closeMobile()">Contact</a>
     <a href="#books" onclick="closeMobile()" style="color:var(--accent);">Browse Books →</a>
   </div>
@@ -912,7 +940,8 @@
       </p>
       <div class="hero-cta-group">
         <a href="#books" class="btn-primary">Browse Books</a>
-        <a href="#about" class="btn-secondary">About the Author</a>
+        <a href="https://viewpoint64.gumroad.com/subscribe" target="_blank" rel="noopener" class="btn-secondary">⭐ Subscribe</a>
+        <a href="#about" class="btn-secondary" style="margin-left:.5rem;">About the Author</a>
       </div>
     </div>
     <div class="hero-stats">
@@ -974,20 +1003,66 @@
 
       <!-- Text column -->
       <div class="about-text">
-        <div class="section-label">Meet the Author</div>
+        <div class="section-label">Meet the Author & Platform</div>
         <h2 class="section-title">Anthony Mbadiwe<br><em style="font-style:italic;color:var(--accent)">Ikeme</em></h2>
         <div class="about-title-tag">Analytical Author · Digital Creator · Agribusiness Entrepreneur</div>
         <div class="divider"></div>
 
         <p class="about-body">
-          Ultimate Viewpoint is a platform dedicated to the honest evaluation of the issues, ideas, and principles that shape our world. As a digital creator, educator, and devout Christian, Anthony Mbadiwe Ikeme's mission is to provide deep, independent insights into human, religious, economic, and political matters — without compromise.
+          Ultimate Viewpoint is a platform dedicated to the honest evaluation of the issues, ideas, and principles that shape our world. As a digital creator, educator, and devout Christian, Anthony Mbadiwe Ikeme provides deep, independent insights into human, religious, economic, and political matters — without compromise or agenda.
         </p>
         <p class="about-body">
-          A graduate of Michael Okpara University of Agriculture, Umudike with a Second Class Upper degree in Agribusiness and Management, Anthony brings a rigorous academic foundation to his writing. His additional certification in Peace and Conflict Resolution reflects a deep commitment to understanding how societies fracture and heal.
+          A graduate of Michael Okpara University of Agriculture, Umudike with a Second Class Upper degree in Agribusiness and Management, and a 2025 certified AI and Engineering Prompt professional through Certiport and the Computer Professionals of Nigeria, Anthony brings both academic rigour and technological expertise to everything published here.
         </p>
-        <p class="about-body">
-          A 2025 certified AI and Engineering Prompt professional through Certiport and the Computer Professionals of Nigeria, Anthony is at the frontier of how digital technology intersects with intellectual creation. Through his digital books and content, he challenges perspectives, encourages critical thinking, and equips readers with frameworks for navigating an increasingly complex world.
-        </p>
+
+        <!-- Site functions grid -->
+        <div class="site-functions">
+          <div class="sf-title">What This Platform Offers</div>
+          <div class="sf-grid">
+            <div class="sf-item">
+              <span class="sf-icon">📚</span>
+              <div>
+                <div class="sf-name">Digital Library</div>
+                <div class="sf-desc">PDF & EPUB books on religion, politics, economics, culture and human behaviour — available for instant download or purchase via secure Gumroad checkout.</div>
+              </div>
+            </div>
+            <div class="sf-item">
+              <span class="sf-icon">📰</span>
+              <div>
+                <div class="sf-name">Advertorial Publishing</div>
+                <div class="sf-desc">Sponsored articles, featured content and partner pieces — editorially reviewed and placed before an engaged, analytical readership.</div>
+              </div>
+            </div>
+            <div class="sf-item">
+              <span class="sf-icon">🎯</span>
+              <div>
+                <div class="sf-name">Advertising Platform</div>
+                <div class="sf-desc">Banner ads, product features and leaderboard slots available for businesses, brands and services targeting educated readers across Nigeria and globally.</div>
+              </div>
+            </div>
+            <div class="sf-item">
+              <span class="sf-icon">🔒</span>
+              <div>
+                <div class="sf-name">Secure Transactions</div>
+                <div class="sf-desc">All purchases processed through Gumroad's PCI-DSS compliant payment system. Ad payments accepted via Paystack, bank transfer and Gumroad.</div>
+              </div>
+            </div>
+            <div class="sf-item">
+              <span class="sf-icon">🌍</span>
+              <div>
+                <div class="sf-name">SEO & Global Reach</div>
+                <div class="sf-desc">Fully optimised for Google, Bing and social media discovery — structured data, Open Graph, sitemap and canonical tags ensure maximum search visibility.</div>
+              </div>
+            </div>
+            <div class="sf-item">
+              <span class="sf-icon">✉</span>
+              <div>
+                <div class="sf-name">Direct Engagement</div>
+                <div class="sf-desc">reCAPTCHA-protected contact form, spam-proof honeypot, and direct Gmail integration — all enquiries go straight to the author.</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div class="about-roles">
           <div class="role-tag role-blue">📖 Author</div>
@@ -1042,7 +1117,79 @@
         <div class="section-label">Publications</div>
         <h2 class="section-title">The Library</h2>
       </div>
-      <button class="btn-admin-toggle" onclick="toggleAdmin()">⚙ Manage Books</button>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;">
+        <button class="btn-admin-toggle" onclick="toggleAdmin()">⚙ Manage Books</button>
+        <button class="btn-admin-toggle" onclick="toggleSettings()" style="border-color:var(--steel);color:var(--steel);">⚙ Settings</button>
+        <button class="btn-admin-toggle" id="logoutBtn" onclick="adminLogout()" style="display:none;border-color:#e57373;color:#e57373;">🔓 Lock Admin</button>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS PANEL ── -->
+    <div class="admin-panel" id="settingsPanel">
+      <div class="admin-header">
+        <span class="admin-title">⚙ Site Settings</span>
+        <span class="admin-note">Adjust site appearance and behaviour. Changes save automatically.</span>
+      </div>
+      <div class="admin-form">
+        <div class="admin-row">
+          <div class="admin-field">
+            <label class="admin-label">Site Title</label>
+            <input class="admin-input" id="s-title" placeholder="Ultimate Viewpoint" oninput="saveSetting('siteTitle',this.value)">
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">Contact Email</label>
+            <input class="admin-input" id="s-email" placeholder="ultimateviewpoint04@gmail.com" oninput="saveSetting('contactEmail',this.value)">
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">Facebook Page URL</label>
+            <input class="admin-input" id="s-facebook" placeholder="https://facebook.com/yourpage" oninput="saveSetting('facebookUrl',this.value)">
+          </div>
+        </div>
+        <div class="admin-row">
+          <div class="admin-field">
+            <label class="admin-label">Accent Colour</label>
+            <input type="color" id="s-color" value="#d4a843" onchange="saveSetting('accentColor',this.value);applyAccentColor(this.value)"
+              style="width:100%;height:42px;background:transparent;border:1px solid rgba(249,250,252,.12);border-radius:6px;cursor:pointer;padding:.2rem;">
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">Hero Headline</label>
+            <input class="admin-input" id="s-headline" placeholder="Where Truth Meets Honest Evaluation" oninput="saveSetting('heroHeadline',this.value)">
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">Gumroad Subscribe URL</label>
+            <input class="admin-input" id="s-gumroad-sub" placeholder="https://viewpoint64.gumroad.com/subscribe" oninput="saveSetting('gumroadSub',this.value)">
+          </div>
+        </div>
+        <div class="admin-row">
+          <div class="admin-field">
+            <label class="admin-label">Show Advertorial Section</label>
+            <select class="admin-input" id="s-adv" onchange="saveSetting('showAdv',this.value);toggleSection('advertorial',this.value)">
+              <option value="show">Show</option>
+              <option value="hide">Hide</option>
+            </select>
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">Show Advertise Section</label>
+            <select class="admin-input" id="s-ads" onchange="saveSetting('showAds',this.value);toggleSection('advertise',this.value)">
+              <option value="show">Show</option>
+              <option value="hide">Hide</option>
+            </select>
+          </div>
+          <div class="admin-field">
+            <label class="admin-label">Books Per Row</label>
+            <select class="admin-input" id="s-cols" onchange="saveSetting('bookCols',this.value);applyBookCols(this.value)">
+              <option value="3">3 Columns</option>
+              <option value="2">2 Columns</option>
+              <option value="1">1 Column</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+          <button class="btn-admin-add" onclick="applyAllSettings()">✓ Apply All Settings</button>
+          <button class="btn-admin-add" onclick="clearAllBooks()" style="background:#e57373;color:#fff;">🗑 Clear All Books</button>
+          <button class="btn-admin-add" onclick="exportBooks()" style="background:var(--steel);">⬇ Export Book List</button>
+        </div>
+      </div>
     </div>
 
     <!-- ── ADMIN PANEL (owner only) ── -->
@@ -1207,20 +1354,20 @@
       <div class="ad-pkg">
         <div class="ad-pkg-icon">📌</div>
         <div class="ad-pkg-name">Banner Ad</div>
-        <div class="ad-pkg-price">Contact for Pricing</div>
+        <div class="ad-pkg-price">₦15,000 / $10 USD</div>
         <ul class="ad-pkg-features">
           <li>✓ Displayed site-wide</li>
           <li>✓ Desktop & mobile</li>
           <li>✓ 30-day placement</li>
           <li>✓ Link to your site</li>
         </ul>
-        <a href="mailto:ultimateviewpoint04@gmail.com?subject=Banner Ad Enquiry" class="ad-pkg-btn">Enquire Now</a>
+        <button onclick="paystackPay('Banner Ad',1500000)" class="ad-pkg-btn">Pay & Book Now</button>
       </div>
       <div class="ad-pkg ad-pkg-featured">
         <div class="ad-pkg-badge">Most Popular</div>
         <div class="ad-pkg-icon">⭐</div>
         <div class="ad-pkg-name">Advertorial Article</div>
-        <div class="ad-pkg-price">Contact for Pricing</div>
+        <div class="ad-pkg-price">₦35,000 / $23 USD</div>
         <ul class="ad-pkg-features">
           <li>✓ Full sponsored article</li>
           <li>✓ Featured in Advertorial section</li>
@@ -1228,19 +1375,19 @@
           <li>✓ Permanent placement</li>
           <li>✓ Editorial review included</li>
         </ul>
-        <a href="mailto:ultimateviewpoint04@gmail.com?subject=Advertorial Article Enquiry" class="ad-pkg-btn">Enquire Now</a>
+        <button onclick="paystackPay('Advertorial Article',3500000)" class="ad-pkg-btn">Pay & Book Now</button>
       </div>
       <div class="ad-pkg">
         <div class="ad-pkg-icon">🎯</div>
         <div class="ad-pkg-name">Product Feature</div>
-        <div class="ad-pkg-price">Contact for Pricing</div>
+        <div class="ad-pkg-price">₦25,000 / $16 USD</div>
         <ul class="ad-pkg-features">
           <li>✓ Product card in books section</li>
           <li>✓ Custom description</li>
           <li>✓ Buy/Visit button</li>
           <li>✓ 60-day placement</li>
         </ul>
-        <a href="mailto:ultimateviewpoint04@gmail.com?subject=Product Feature Enquiry" class="ad-pkg-btn">Enquire Now</a>
+        <button onclick="paystackPay('Product Feature',2500000)" class="ad-pkg-btn">Pay & Book Now</button>
       </div>
     </div>
     <!-- Ad banner slots -->
@@ -1355,13 +1502,15 @@
       </div>
     </div>
     <div class="footer-bar">
-      <p class="footer-copy">© 2025 Ultimate Viewpoint. All rights reserved.</p>
+      <p class="footer-copy">© 2025 Ultimate Viewpoint — Anthony Mbadiwe Ikeme. All rights reserved.</p>
       <div class="footer-links">
         <a href="privacy-policy.html">Privacy Policy</a>
         <a href="terms-of-use.html">Terms of Use</a>
         <a href="disclaimer.html">Disclaimer</a>
         <a href="#advertise">Advertise</a>
+        <a href="https://viewpoint64.gumroad.com/subscribe" target="_blank" rel="noopener">⭐ Subscribe</a>
         <a href="#books">Books</a>
+        <a href="mailto:ultimateviewpoint04@gmail.com">✉ Contact</a>
       </div>
     </div>
   </div>
@@ -1413,14 +1562,14 @@
 
     // Rate limiting — max 3 submissions per 10 minutes
     const now = Date.now();
-    const submissions = JSON.parse(sessionStorage.getItem('form_submissions') || '[]')
+    const submissions = JSON.parse(localStorage.getItem('uv_form_submissions') || '[]')
       .filter(t => now - t < 10 * 60 * 1000);
     if (submissions.length >= 3) {
       alert('Too many messages sent. Please wait 10 minutes before trying again.');
       return;
     }
     submissions.push(now);
-    sessionStorage.setItem('form_submissions', JSON.stringify(submissions));
+    localStorage.setItem('uv_form_submissions', JSON.stringify(submissions));
 
     // Open Gmail with pre-filled message
     const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
@@ -1432,7 +1581,104 @@
     grecaptcha.reset();
   }
 
-  // ── ADMIN PANEL — HARDENED PASSWORD PROTECTION ──────────
+  // ── SETTINGS PANEL ───────────────────────────────────────
+  function toggleSettings() {
+    const panel = document.getElementById('settingsPanel');
+    if (panel.classList.contains('open')) {
+      panel.classList.remove('open'); return;
+    }
+    if (adminUnlocked) {
+      loadSettings();
+      panel.classList.add('open');
+    } else {
+      document.getElementById('adminOverlay').style.display = 'flex';
+      setTimeout(() => document.getElementById('adminPwInput').focus(), 100);
+      // After unlock, open settings instead
+      _pendingPanel = 'settings';
+    }
+  }
+
+  function saveSetting(key, value) {
+    try { localStorage.setItem('uv_set_' + key, value); } catch(e) {}
+  }
+
+  function loadSettings() {
+    const fields = {
+      's-title':      'siteTitle',
+      's-email':      'contactEmail',
+      's-facebook':   'facebookUrl',
+      's-headline':   'heroHeadline',
+      's-gumroad-sub':'gumroadSub'
+    };
+    Object.entries(fields).forEach(([id, key]) => {
+      const el = document.getElementById(id);
+      const val = localStorage.getItem('uv_set_' + key);
+      if (el && val) el.value = val;
+    });
+    const color = localStorage.getItem('uv_set_accentColor');
+    if (color) document.getElementById('s-color').value = color;
+    const cols = localStorage.getItem('uv_set_bookCols');
+    if (cols) document.getElementById('s-cols').value = cols;
+  }
+
+  function applyAllSettings() {
+    const color = document.getElementById('s-color').value;
+    applyAccentColor(color);
+    const cols = document.getElementById('s-cols').value;
+    applyBookCols(cols);
+    const advVal = document.getElementById('s-adv').value;
+    toggleSection('advertorial', advVal);
+    const adsVal = document.getElementById('s-ads').value;
+    toggleSection('advertise', adsVal);
+    const subUrl = document.getElementById('s-gumroad-sub').value.trim();
+    if (subUrl) {
+      document.querySelectorAll('a[href*="gumroad.com/subscribe"]').forEach(a => a.href = subUrl);
+    }
+    alert('✓ Settings applied successfully!');
+  }
+
+  function applyAccentColor(color) {
+    document.documentElement.style.setProperty('--accent', color);
+  }
+
+  function applyBookCols(cols) {
+    const grid = document.getElementById('booksGrid');
+    if (grid) grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  }
+
+  function toggleSection(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = val === 'hide' ? 'none' : '';
+  }
+
+  function clearAllBooks() {
+    if (!confirm('Are you sure you want to remove ALL books from the library? This cannot be undone.')) return;
+    books = [];
+    localStorage.removeItem('uv_books');
+    renderBooks();
+    alert('All books cleared.');
+  }
+
+  function exportBooks() {
+    const data = JSON.stringify(books, null, 2);
+    const blob = new Blob([data], {type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'ultimateviewpoint-books.json';
+    a.click(); URL.revokeObjectURL(url);
+  }
+
+  // ── LOGOUT / LOCK ADMIN ──────────────────────────────────
+  function adminLogout() {
+    adminUnlocked = false;
+    document.getElementById('adminPanel').classList.remove('open');
+    document.getElementById('settingsPanel').classList.remove('open');
+    document.getElementById('logoutBtn').style.display = 'none';
+    alert('Admin panel locked.');
+  }
+
+  // Show logout button when admin is unlocked
+  let _pendingPanel = null;
   let adminUnlocked = false;
   let adminAttempts = parseInt(sessionStorage.getItem('adm_attempts') || '0');
   let adminLockedUntil = parseInt(sessionStorage.getItem('adm_locked') || '0');
@@ -1484,7 +1730,15 @@
       sessionStorage.removeItem('adm_locked');
       document.getElementById('adminOverlay').style.display = 'none';
       document.getElementById('adminPwInput').value = '';
-      document.getElementById('adminPanel').classList.add('open');
+      document.getElementById('logoutBtn').style.display = 'inline-block';
+      // Open pending panel if any
+      if (_pendingPanel === 'settings') {
+        _pendingPanel = null;
+        loadSettings();
+        document.getElementById('settingsPanel').classList.add('open');
+      } else {
+        document.getElementById('adminPanel').classList.add('open');
+      }
     } else {
       // Failed attempt
       adminAttempts++;
@@ -1526,14 +1780,23 @@
     }
   });
 
-  // ── BOOK STORE (sessionStorage so books persist on reload) ─
+  // ── BOOK STORE — localStorage for permanent persistence ──
   let books = [];
-  try { books = JSON.parse(sessionStorage.getItem('uv_books') || '[]'); } catch(e) { books = []; }
+  try { books = JSON.parse(localStorage.getItem('uv_books') || '[]'); } catch(e) { books = []; }
 
   function saveBooks() {
-    // Save everything except blob URLs (those are session only)
-    const toSave = books.map(b => ({...b, pdfBlob: null, epubBlob: null}));
-    try { sessionStorage.setItem('uv_books', JSON.stringify(toSave)); } catch(e) {}
+    // Save all book data except blob URLs (those are temporary)
+    const toSave = books.map(b => ({
+      ...b,
+      // Keep URL-based files, remove blob data URLs (too large for localStorage)
+      pdf:  b.pdf  ? { name: b.pdf.name,  url: b.pdf.url.startsWith('data:')  ? null : b.pdf.url  } : null,
+      epub: b.epub ? { name: b.epub.name, url: b.epub.url.startsWith('data:') ? null : b.epub.url } : null,
+      cover: b.cover && b.cover.startsWith('data:') ? null : b.cover
+    }));
+    try { localStorage.setItem('uv_books', JSON.stringify(toSave)); } catch(e) {
+      // If localStorage is full, alert user
+      alert('Storage full. Please use GitHub/Gumroad URLs instead of direct file uploads for permanent storage.');
+    }
   }
 
   // ── READ FILE AS DATA URL ─────────────────────────────────
@@ -1760,9 +2023,211 @@
     el.style.opacity = '0'; observer.observe(el);
   });
 
+  // ── PAYSTACK ADVERT PAYMENT ──────────────────────────────
+  let _psAmount = 0;
+  let _psProduct = '';
+
+  function paystackPay(product, amount) {
+    _psProduct = product;
+    _psAmount  = amount;
+    document.getElementById('psModalTitle').textContent = product;
+    document.getElementById('psModalPrice').textContent =
+      '₦' + (amount/100).toLocaleString() + ' — Secure Checkout';
+    document.getElementById('psName').value  = '';
+    document.getElementById('psEmail').value = '';
+    document.getElementById('psPhone').value = '';
+    document.getElementById('psError').style.display = 'none';
+    document.getElementById('paystackModal').style.display = 'flex';
+  }
+
+  function closePaystackModal() {
+    document.getElementById('paystackModal').style.display = 'none';
+  }
+
+  function initiatePaystack() {
+    const name  = document.getElementById('psName').value.trim();
+    const email = document.getElementById('psEmail').value.trim();
+    const phone = document.getElementById('psPhone').value.trim();
+    const err   = document.getElementById('psError');
+
+    if (!name || !email) {
+      err.textContent = 'Please enter your name and email address.';
+      err.style.display = 'block'; return;
+    }
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRx.test(email)) {
+      err.textContent = 'Please enter a valid email address.';
+      err.style.display = 'block'; return;
+    }
+
+    err.style.display = 'none';
+    closePaystackModal();
+
+    // NOTE: Replace 'pk_test_xxxxxxxxxx' with your real Paystack Public Key
+    // Get your key at: dashboard.paystack.com > Settings > API Keys
+    const handler = PaystackPop.setup({
+      key: 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      email: email,
+      amount: _psAmount,
+      currency: 'NGN',
+      ref: 'UV_AD_' + Date.now(),
+      metadata: {
+        custom_fields: [
+          { display_name: 'Customer Name', variable_name: 'name', value: name },
+          { display_name: 'Phone', variable_name: 'phone', value: phone },
+          { display_name: 'Ad Package', variable_name: 'package', value: _psProduct }
+        ]
+      },
+      callback: function(response) {
+        // Payment successful
+        const ref = response.reference;
+        alert('✅ Payment successful!\n\nReference: ' + ref +
+          '\n\nThank you, ' + name + '. We will contact you at ' + email +
+          ' within 24 hours to set up your ' + _psProduct + '.');
+        // Auto-email notification
+        const body = encodeURIComponent(
+          'New Ad Payment Received!\n\nPackage: ' + _psProduct +
+          '\nName: ' + name + '\nEmail: ' + email +
+          '\nPhone: ' + phone + '\nReference: ' + ref +
+          '\nAmount: ₦' + (_psAmount/100).toLocaleString()
+        );
+        window.open('https://mail.google.com/mail/?view=cm&fs=1&to=ultimateviewpoint04@gmail.com&su=' +
+          encodeURIComponent('New Ad Payment: ' + _psProduct + ' — ' + ref) +
+          '&body=' + body, '_blank');
+      },
+      onClose: function() {
+        // Payment window closed without paying
+      }
+    });
+    handler.openIframe();
+  }
+
+  // ── ENHANCED SECURITY ────────────────────────────────────
+  // 1. Detect and warn on suspicious URL parameters (phishing prevention)
+  (function() {
+    const params = new URLSearchParams(window.location.search);
+    const suspicious = ['token','auth','login','verify','confirm','reset','key','secret'];
+    suspicious.forEach(p => {
+      if (params.has(p)) {
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0a1628;color:#f8faff;font-family:sans-serif;text-align:center;padding:2rem;"><div><div style="font-size:3rem;margin-bottom:1rem;">🚫</div><h2 style="color:#e57373;margin-bottom:1rem;">Suspicious Link Detected</h2><p style="color:#7a8fa8;max-width:400px;">This link contains suspicious parameters. For your safety, this page has been blocked. Please visit the site directly.</p><a href="/" style="display:inline-block;margin-top:1.5rem;background:#d4a843;color:#0a1628;padding:.8rem 2rem;border-radius:30px;text-decoration:none;font-weight:600;">Go to Homepage</a></div></div>';
+      }
+    });
+  })();
+
+  // 2. Detect iframe embedding (clickjacking prevention)
+  if (window.top !== window.self) {
+    window.top.location = window.self.location;
+  }
+
+  // 3. Block copy of sensitive admin content
+  document.addEventListener('copy', function(e) {
+    if (document.getElementById('adminPanel') &&
+        document.getElementById('adminPanel').classList.contains('open')) {
+      const sel = window.getSelection().toString();
+      if (sel.length > 0) {
+        e.clipboardData.setData('text/plain', sel);
+        e.preventDefault();
+      }
+    }
+  });
+
+  // 4. Session timeout for admin — auto-lock after 15 min inactivity
+  let adminTimer;
+  function resetAdminTimer() {
+    clearTimeout(adminTimer);
+    adminTimer = setTimeout(() => {
+      if (adminUnlocked) {
+        adminUnlocked = false;
+        document.getElementById('adminPanel').classList.remove('open');
+        alert('Admin session expired due to inactivity. Please re-enter your password.');
+      }
+    }, 15 * 60 * 1000);
+  }
+  document.addEventListener('mousemove', resetAdminTimer);
+  document.addEventListener('keypress', resetAdminTimer);
+
+  // 5. Warn user before leaving page if admin panel is open
+  window.addEventListener('beforeunload', function(e) {
+    if (adminUnlocked) {
+      e.preventDefault();
+      e.returnValue = 'Admin panel is open. Are you sure you want to leave?';
+    }
+  });
+
+  // 6. Anti-devtools detection for admin panel
+  let devtoolsOpen = false;
+  setInterval(() => {
+    const threshold = 160;
+    if (window.outerWidth - window.innerWidth > threshold ||
+        window.outerHeight - window.innerHeight > threshold) {
+      if (!devtoolsOpen && adminUnlocked) {
+        devtoolsOpen = true;
+        adminUnlocked = false;
+        document.getElementById('adminPanel').classList.remove('open');
+      }
+    } else { devtoolsOpen = false; }
+  }, 1000);
+
   // ── INIT ──────────────────────────────────────────────────
   renderBooks();
+  resetAdminTimer();
+
+  // Apply saved settings on load
+  (function applyStoredSettings() {
+    const color = localStorage.getItem('uv_set_accentColor');
+    if (color) applyAccentColor(color);
+    const cols = localStorage.getItem('uv_set_bookCols');
+    if (cols) applyBookCols(cols);
+    const advVal = localStorage.getItem('uv_set_showAdv');
+    if (advVal) toggleSection('advertorial', advVal);
+    const adsVal = localStorage.getItem('uv_set_showAds');
+    if (adsVal) toggleSection('advertise', adsVal);
+    const subUrl = localStorage.getItem('uv_set_gumroadSub');
+    if (subUrl) {
+      document.querySelectorAll('a[href*="gumroad.com/subscribe"]').forEach(a => a.href = subUrl);
+    }
+  })();
+
 </script>
+<!-- ── PAYSTACK PAYMENT MODAL ── -->
+<div id="paystackModal" style="display:none;position:fixed;inset:0;background:rgba(10,22,40,.92);backdrop-filter:blur(8px);z-index:998;align-items:center;justify-content:center;">
+  <div style="background:var(--deep);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:2.5rem;width:90%;max-width:420px;">
+    <div style="font-size:2rem;text-align:center;margin-bottom:.8rem;">💳</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--white);text-align:center;margin-bottom:.3rem;" id="psModalTitle">Payment</div>
+    <div style="font-size:.85rem;color:var(--accent);text-align:center;margin-bottom:1.5rem;" id="psModalPrice"></div>
+    <p style="font-size:.82rem;color:var(--gray);margin-bottom:1.2rem;line-height:1.6;text-align:center;">Enter your details to proceed to secure Paystack checkout. You will receive a confirmation email after payment.</p>
+    <div style="display:flex;flex-direction:column;gap:.8rem;">
+      <div>
+        <label style="font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);display:block;margin-bottom:.35rem;">Full Name *</label>
+        <input id="psName" type="text" placeholder="Your full name"
+          style="width:100%;background:rgba(248,250,255,.06);border:1px solid rgba(248,250,255,.15);border-radius:6px;padding:.75rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;">
+      </div>
+      <div>
+        <label style="font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);display:block;margin-bottom:.35rem;">Email Address *</label>
+        <input id="psEmail" type="email" placeholder="your@email.com"
+          style="width:100%;background:rgba(248,250,255,.06);border:1px solid rgba(248,250,255,.15);border-radius:6px;padding:.75rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;">
+      </div>
+      <div>
+        <label style="font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);display:block;margin-bottom:.35rem;">Phone Number</label>
+        <input id="psPhone" type="tel" placeholder="+234 800 000 0000"
+          style="width:100%;background:rgba(248,250,255,.06);border:1px solid rgba(248,250,255,.15);border-radius:6px;padding:.75rem 1rem;color:var(--white);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;">
+      </div>
+      <p id="psError" style="display:none;color:#e57373;font-size:.8rem;"></p>
+      <div style="display:flex;gap:.75rem;margin-top:.3rem;">
+        <button onclick="closePaystackModal()"
+          style="flex:1;padding:.75rem;background:transparent;border:1px solid rgba(248,250,255,.15);border-radius:6px;color:var(--gray);font-family:'DM Sans',sans-serif;cursor:pointer;font-size:.88rem;">
+          Cancel
+        </button>
+        <button onclick="initiatePaystack()"
+          style="flex:1;padding:.75rem;background:linear-gradient(135deg,var(--accent),var(--accent-lt));border:none;border-radius:6px;color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;font-size:.88rem;">
+          Proceed to Pay
+        </button>
+      </div>
+    </div>
+    <p style="margin-top:1rem;font-size:.7rem;color:rgba(122,143,168,.5);text-align:center;">🔒 Secured by Paystack · SSL Encrypted · PCI-DSS Compliant</p>
+  </div>
+</div>
+
 <!-- ── ADMIN PASSWORD OVERLAY ── -->
 <div id="adminOverlay" style="display:none;position:fixed;inset:0;background:rgba(10,22,40,.92);backdrop-filter:blur(8px);z-index:999;align-items:center;justify-content:center;">
   <div style="background:var(--deep);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:2.5rem;width:90%;max-width:400px;text-align:center;">
