@@ -2066,11 +2066,12 @@
     // NOTE: Replace 'pk_test_xxxxxxxxxx' with your real Paystack Public Key
     // Get your key at: dashboard.paystack.com > Settings > API Keys
     const handler = PaystackPop.setup({
-      key: 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      key: 'pk_live_6ab25a912de0ae971bc6ba70348218bb77ca6598',
       email: email,
       amount: _psAmount,
       currency: 'NGN',
       ref: 'UV_AD_' + Date.now(),
+      callback_url: 'https://ikemeanthony40-collab.github.io/ultimateviewpoint/',
       metadata: {
         custom_fields: [
           { display_name: 'Customer Name', variable_name: 'name', value: name },
