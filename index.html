@@ -1674,7 +1674,9 @@
     document.getElementById('adminPanel').classList.remove('open');
     document.getElementById('settingsPanel').classList.remove('open');
     document.getElementById('logoutBtn').style.display = 'none';
-    alert('Admin panel locked.');
+    // Re-render books to hide Remove buttons from public view
+    renderBooks();
+    alert('Admin panel locked. Remove buttons are now hidden from visitors.');
   }
 
   // Show logout button when admin is unlocked
@@ -1913,7 +1915,7 @@
 
       grid.innerHTML += `
         <div class="book-card" id="book-${book.id}">
-          <div class="book-card-admin-bar">
+          <div class="book-card-admin-bar" style="display:${adminUnlocked ? 'flex' : 'none'};">
             <button class="btn-delete" onclick="removeBook(${book.id})">✕ Remove</button>
           </div>
           <div class="book-cover">
@@ -2140,7 +2142,10 @@
       if (adminUnlocked) {
         adminUnlocked = false;
         document.getElementById('adminPanel').classList.remove('open');
-        alert('Admin session expired due to inactivity. Please re-enter your password.');
+        document.getElementById('settingsPanel').classList.remove('open');
+        document.getElementById('logoutBtn').style.display = 'none';
+        renderBooks(); // Hide Remove buttons from public
+        alert('Admin session expired due to inactivity. Panel locked.');
       }
     }, 15 * 60 * 1000);
   }
@@ -2165,6 +2170,9 @@
         devtoolsOpen = true;
         adminUnlocked = false;
         document.getElementById('adminPanel').classList.remove('open');
+        document.getElementById('settingsPanel').classList.remove('open');
+        document.getElementById('logoutBtn').style.display = 'none';
+        renderBooks(); // Hide Remove buttons
       }
     } else { devtoolsOpen = false; }
   }, 1000);
