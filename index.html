@@ -1682,8 +1682,9 @@
   // Show logout button when admin is unlocked
   let _pendingPanel = null;
   let adminUnlocked = false;
-  let adminAttempts = parseInt(sessionStorage.getItem('adm_attempts') || '0');
-  let adminLockedUntil = parseInt(sessionStorage.getItem('adm_locked') || '0');
+  // Use localStorage so lockout persists even if tab is refreshed
+  let adminAttempts = parseInt(localStorage.getItem('adm_attempts') || '0');
+  let adminLockedUntil = parseInt(localStorage.getItem('adm_locked') || '0');
 
   function toggleAdmin() {
     const panel = document.getElementById('adminPanel');
@@ -1728,8 +1729,8 @@
       // Success — reset counters
       adminUnlocked = true;
       adminAttempts = 0;
-      sessionStorage.removeItem('adm_attempts');
-      sessionStorage.removeItem('adm_locked');
+      localStorage.removeItem('adm_attempts');
+      localStorage.removeItem('adm_locked');
       document.getElementById('adminOverlay').style.display = 'none';
       document.getElementById('adminPwInput').value = '';
       document.getElementById('logoutBtn').style.display = 'inline-block';
@@ -1744,13 +1745,13 @@
     } else {
       // Failed attempt
       adminAttempts++;
-      sessionStorage.setItem('adm_attempts', adminAttempts);
+      localStorage.setItem('adm_attempts', adminAttempts);
       document.getElementById('adminPwInput').value = '';
 
       if (adminAttempts >= 5) {
         // Lock for 15 minutes after 5 wrong attempts
         adminLockedUntil = now + 15 * 60 * 1000;
-        sessionStorage.setItem('adm_locked', adminLockedUntil);
+        localStorage.setItem('adm_locked', adminLockedUntil);
         if (lockMsg) { lockMsg.textContent = 'Too many failed attempts. Locked for 15 minutes.'; lockMsg.style.display = 'block'; }
         if (err) err.style.display = 'none';
       } else {
